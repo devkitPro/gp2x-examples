@@ -10,6 +10,10 @@ endif
 include $(DEVKITARM)/gp2x_rules
 
 #---------------------------------------------------------------------------------
+TITLE := Framebuffer Example
+#---------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
 # SOURCES is a list of directories containing source code
@@ -111,6 +115,8 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
+
+$(OUTPUT).o2x   :       $(OUTPUT).bin
 
 $(OUTPUT).bin   :       $(OUTPUT).elf
 

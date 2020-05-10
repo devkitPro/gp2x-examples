@@ -27,6 +27,8 @@ int main() {
   while(1) {
     uint32_t currentButtonState = btnState();
     uint32_t newPresses = currentButtonState&(~previousButtonState);
+    previousButtonState = currentButtonState;
+
     if(newPresses) {
       lcdWaitNextVSync();
       rgbSetFbAddress((void*)isRed ? fb1 : fb0);
