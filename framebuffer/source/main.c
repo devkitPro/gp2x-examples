@@ -6,9 +6,9 @@
 #define GREEN 0x07E0
 
 
-int main() {
+int main(int argc, char* argv[]) {
   gp2xInit();
-  
+
   uint16_t* fb0 = malloc(320*240*2);
   uint16_t* fb1 = malloc(320*240*2);
 
