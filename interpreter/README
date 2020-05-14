@@ -1,0 +1,1 @@
+Interpreter example, demonstrates how an interpreter is just a normal o2x executable, but is passed in argv[1] the path to the file it should run. See open2x-bootloader for documentation on setting up interpreters.
