@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <gp2xregs.h>
 #include <orcus.h>
+#include <unistd.h>
 
 #define RED 0xF800
 #define GREEN 0x07E0
-
 
 int main(int argc, char* argv[]) {
   gp2xInit();
@@ -25,10 +25,26 @@ int main(int argc, char* argv[]) {
   uint32_t previousButtonState = 0;
   bool isRed = true;
   while(1) {
+
+    // debounce buttons
     uint32_t currentButtonState = btnState();
+    uint32_t nextButtonState;
+    while(1) {
+      usleep(5000);
+      nextButtonState = btnState();
+      if(nextButtonState == currentButtonState) {
+	break;
+      }
+      currentButtonState = nextButtonState;
+    }
+
     uint32_t newPresses = currentButtonState&(~previousButtonState);
     previousButtonState = currentButtonState;
 
+    if(newPresses & R) {
+      return 0;
+    }
+    
     if(newPresses) {
       lcdWaitNextVSync();
       rgbSetFbAddress((void*)isRed ? fb1 : fb0);
