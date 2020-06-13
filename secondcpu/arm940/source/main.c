@@ -6,7 +6,8 @@
 
 extern volatile void* __is_arm940;
 int main() {
-  void* fb = (void*)0x10000;// malloc(320*240*2); // TODO - investigate why malloc sometimes doesn't work
+  gp2xInit();
+  void* fb = malloc(320*240*2);
   
   arm920Data[0] = (((uint32_t)fb) >> 16);
   arm920Data[1] = (((uint32_t)fb)&0xFFFF);
