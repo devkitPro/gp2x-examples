@@ -7,11 +7,22 @@
 extern volatile void* __is_arm940;
 int main() {
   gp2xInit();
-  void* fb = malloc(320*240*2);
+  uint16_t* fb = (uint16_t*) malloc(320*240*2);
   
   arm920Data[0] = (((uint32_t)fb) >> 16);
   arm920Data[1] = (((uint32_t)fb)&0xFFFF);
-  usleep(1000000);
+  uartPrintf("FB allocated at 0x%x, globally this is the same as 0x%x\n",fb, exportPointer(fb));
+  usleep(5000000);
+
+  rgbSetPixelFormat(RGB565);
+  rgbRegionNoBlend(REGION1);
+  rgbSetRegionPosition(REGION1, 0, 0, 320, 240);
+  for(int i = 320*240 ; i-- ; ) {
+    *(fb+i) = 0x7861;
+  }
+  rgbSetFbAddress((void*)exportPointer(fb));
+  rgbToggleRegion(REGION1, true);
+  
   arm920Data[2] = 0; // clear flag to indicate we've done our work
 
   uint32_t btn = btnState();
