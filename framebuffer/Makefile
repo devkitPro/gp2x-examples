@@ -11,7 +11,7 @@ include $(DEVKITARM)/gp2x_rules
 
 #---------------------------------------------------------------------------------
 TITLE := Framebuffer Example
-MKO2X_PARAMS := --params 0x3FFDCFC 260
+MKO2X_PARAMS := --params 0x3FFDCFC 260 --icon icon.bin
 #---------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------
@@ -117,11 +117,15 @@ DEPENDS	:=	$(OFILES:.o=.d)
 # main targets
 #---------------------------------------------------------------------------------
 
-$(OUTPUT).o2x   :       $(OUTPUT).bin
+$(OUTPUT).o2x   :       $(OUTPUT).bin icon.bin
 
 $(OUTPUT).bin   :       $(OUTPUT).elf
 
 $(OUTPUT).elf	:	$(OFILES)
+
+icon.bin        :
+	@echo $(notdir $<)
+	bmp2bin -q $(CURDIR)/../icon.bmp $@
 
 #---------------------------------------------------------------------------------
 %.bin	:	%.bmp
