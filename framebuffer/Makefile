@@ -4,14 +4,14 @@
 .SUFFIXES:
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(DEVKITARM)),)
-$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
 endif
 
 include $(DEVKITARM)/gp2x_rules
 
 #---------------------------------------------------------------------------------
 TITLE := Framebuffer Example
-MKO2X_PARAMS := --params 0x3FFDCFC 260 --icon icon.bin
+MKO2X_PARAMS := --icon icon.bin
 #---------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------

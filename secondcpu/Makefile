@@ -11,7 +11,7 @@ include $(DEVKITARM)/gp2x_rules
 
 #---------------------------------------------------------------------------------
 TITLE := Second CPU Example
-MKO2X_PARAMS := --params 0x3FFDCFC 260
+MKO2X_PARAMS := 
 ARM940_MEMORY_BANK := 3
 #---------------------------------------------------------------------------------
 
@@ -60,7 +60,10 @@ else
 #---------------------------------------------------------------------------------
 
 $(OUTPUT).o2x   : arm920 arm940
-	mko2x --name "$(TITLE)" --out $@ --section $(CURDIR)/../$(ARM920_DIR)/arm920.bin 0x0 --section $(CURDIR)/../$(ARM940_DIR)/arm940.940.bin $$(( 16777216 * $(ARM940_MEMORY_BANK) )) $(MKO2X_PARAMS)
+	@$(eval PARAMS_ADDR := $(shell readelf -s $(CURDIR)/../$(ARM920_DIR)/arm920.elf | grep "__params_addr" | grep -Po ': \K[0-9A-Fa-f]+ ' | xargs printf "0x%s"))
+	@$(eval PARAMS_LENGTH := $(shell readelf -s $(CURDIR)/../$(ARM920_DIR)/arm920.elf | grep "__params_length" | grep -Po ': \K[0-9A-Fa-f]+ ' | xargs printf "0x%s"))
+
+	mko2x --name "$(TITLE)" --out $@ --section $(CURDIR)/../$(ARM920_DIR)/arm920.bin 0x0 --section $(CURDIR)/../$(ARM940_DIR)/arm940.940.bin $$(( 16777216 * $(ARM940_MEMORY_BANK) )) --params ${PARAMS_ADDR} ${PARAMS_LENGTH} $(MKO2X_PARAMS)
 
 arm920:
 	make -C $(CURDIR)/../$(ARM920_DIR) ARM940_MEMORY_BANK=$(ARM940_MEMORY_BANK)
