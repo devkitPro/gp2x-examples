@@ -57,3 +57,6 @@ dkms.conf
 .#*
 */build
 *.o2x
+run.sh
+run.gdb
+*/scripts
