@@ -15,54 +15,46 @@ int main(int argc, char* argv[]) {
   setbuf(stdout, NULL);
   printf("2D Accelerator example\n");
 
-  uint16_t* fb0 = malloc(320*240*2);
-  uint16_t* fb1 = malloc(320*240*2);
-  printf("FB0: %p, FB1 %p, %p\n", fb0, fb1, &FREG32(DSTCTRL));
+  uint16_t* fb = malloc(320*240*2);
 
   rgbSetPixelFormat(RGB565);
   rgbRegionNoBlend(REGION1);
   rgbSetRegionPosition(REGION1, 0, 0, 320, 240);
   for(int i = 320*240 ; i-- ; ) {
-    *(fb0+i) = WHITE;
-    *(fb1+i) = WHITE;
+    *(fb+i) = WHITE;
   }
 
-  uint16_t* fb = fb0;
-  uint16_t* nextFb = fb1;
   rgbSetFbAddress((void*)fb);
   rgbToggleRegion(REGION1, true);
 
-  uint32_t previousButtonState = 0;
+  // blit a picture of the sun to (0,0) with no colour key transparency
+  rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
+	  &((Rect){0, 0, 60, 60}),
+	  &((Graphic){fb, 320, 240, RGB565}),
+	  0, 0, false);
+  rgb2dRun();
+  rgb2dWaitComplete();
+
+  // blit a picture of the sun to (60,0) with the default colour key transparency (magenta)
+  rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
+	  &((Rect){0, 0, 60, 60}),
+	  &((Graphic){fb, 320, 240, RGB565}),
+	  60, 0, true);
+  rgb2dRun();
+  rgb2dWaitComplete();
+
+  // blit a picture of the sun to (120,0) with the centre colour transparent
+  rgbSetTransparencyColour(0xFEC0);
+  rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
+	  &((Rect){0, 0, 60, 60}),
+	  &((Graphic){fb, 320, 240, RGB565}),
+	  120, 0, true);
+  rgb2dRun();
+  rgb2dWaitComplete();
+  
   while(1) {    
-    uint32_t currentButtonState = btnStateDebounced();
-    uint32_t newPresses = currentButtonState&(~previousButtonState);
-    previousButtonState = currentButtonState;
-
-    bool redraw = false;
-
-    if(newPresses & A) {
-      printf("Blitting sun\n");
-      rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
-	      &((Rect){0, 0, 60, 60}),
-	      &((Graphic){nextFb, 320, 240, RGB565}),
-	      0, 0, false);
-      rgb2dRun();
-      rgb2dWaitComplete();
-      rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
-	      &((Rect){0, 0, 60, 60}),
-	      &((Graphic){nextFb, 320, 240, RGB565}),
-	      60, 0, true);
-      rgb2dRun();
-      rgb2dWaitComplete();      
-      redraw = true;
-    }
-    
-    if(redraw) {
-      lcdWaitNextVSync();
-      rgbSetFbAddress((void*)nextFb);
-      uint16_t* curFb = fb;
-      fb = nextFb;
-      nextFb = curFb;
+    if(btnStateDebounced() & R) {
+      return 0;
     }
   }
 }
