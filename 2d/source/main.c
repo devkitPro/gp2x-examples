@@ -9,7 +9,7 @@
 #define RED 0xF800
 #define GREEN 0x07E0
 #define BLACK 0x0000
-
+#define WHITE 0xFFFF
 int main(int argc, char* argv[]) {
   gp2xInit();
   setbuf(stdout, NULL);
@@ -23,8 +23,8 @@ int main(int argc, char* argv[]) {
   rgbRegionNoBlend(REGION1);
   rgbSetRegionPosition(REGION1, 0, 0, 320, 240);
   for(int i = 320*240 ; i-- ; ) {
-    *(fb0+i) = BLACK;
-    *(fb1+i) = BLACK;
+    *(fb0+i) = WHITE;
+    *(fb1+i) = WHITE;
   }
 
   uint16_t* fb = fb0;
@@ -48,6 +48,12 @@ int main(int argc, char* argv[]) {
 	      0, 0, false);
       rgb2dRun();
       rgb2dWaitComplete();
+      rgbBlit(&((Graphic){&sun_bin, 60, 60, RGB565}),
+	      &((Rect){0, 0, 60, 60}),
+	      &((Graphic){nextFb, 320, 240, RGB565}),
+	      60, 0, true);
+      rgb2dRun();
+      rgb2dWaitComplete();      
       redraw = true;
     }
     
