@@ -37,16 +37,16 @@ int main(int argc, char* argv[]) {
 	  &((Rect){0, 0, 60, 60}),
 	  screen,
 	  0, 0, false);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
 
   // blit a picture of the sun to (60,0) with the default colour key transparency (magenta)
   rgbBlit(sun,
 	  &((Rect){0, 0, 60, 60}),
 	  screen,
 	  60, 0, true);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
 
   // blit a picture of the sun to (120,0) with the centre colour transparent
   rgbSetTransparencyColour(0xFEC0);
@@ -54,20 +54,20 @@ int main(int argc, char* argv[]) {
 	  &((Rect){0, 0, 60, 60}),
 	  screen,
 	  120, 0, true);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
 
   // fill a 60x60 square at (180,0) with a green colour
   rgbSolidFill(screen, &((Rect){180, 0, 60, 60}), GREEN);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
 
   // fill a 60x60 square with chequerboard pattern at (240,0)
   pattern[0] = 0xAA55AA55;
   pattern[1] = 0xAA55AA55;
   rgbPatternFill(screen, &((Rect){240, 0, 60, 60}), &((RasterPattern){GREEN, RED, B1BPP, 0}), false);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
 
   // draw sun at (0,60) excluding set bits in pattern resulting in a shaded effect
   pattern[0] = 0xAA55AA55;
@@ -78,8 +78,44 @@ int main(int argc, char* argv[]) {
 	      ROP_EXCLUDEPAT,
 	      &((RasterPattern){0xFFFF, BLACK, B1BPP, 0}),
 	      true, 0, 0);
-  rgb2dRun();
-  rgb2dWaitComplete();
+  rgbRasterRun();
+  rgbRasterWaitComplete();
+
+  // draw the sun at (60,60) rotated 90 degrees
+  rgbRotBlit(sun, &((Rect){0, 0, 60, 60}),
+	     screen, 60, 60, DEG90);
+  rgbRotRun();
+  rgbRotWaitComplete();
+
+  // draw the sun at (120,60) rotated 180 degrees
+  rgbRotBlit(sun, &((Rect){0, 0, 60, 60}),
+	     screen, 120, 60, DEG180);
+  rgbRotRun();
+  rgbRotWaitComplete();
+
+  // draw the sun at (180,60) rotated 270 degrees
+  rgbRotBlit(sun, &((Rect){0, 0, 60, 60}),
+	     screen, 180, 60, DEG270);
+  rgbRotRun();
+  rgbRotWaitComplete();
+
+  // draw the sun at (240,60) first into an intermediate buffer rotated 270 degrees, then onto the screen with transparency applied
+  uint16_t intBuf[60*60];
+  Graphic* intBufG = &((Graphic){&intBuf, 60, 60, RGB565});
+  rgbRotBlit(sun, &((Rect){0, 0, 60, 60}),
+	     intBufG, 0, 0, DEG270);
+  rgbRotRun();
+  rgbRotWaitComplete();
+
+  rgbBlit(intBufG,
+	  &((Rect){0, 0, 60, 60}),
+	  screen,
+	  240, 60, true);
+  rgbRasterRun();
+  rgbRasterWaitComplete();
+  
+  // done
+  printf("Finished drawing!\n\n");
   
   while(1) {    
     if(btnStateDebounced() & R) {
