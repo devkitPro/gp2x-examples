@@ -113,6 +113,13 @@ int main(int argc, char* argv[]) {
 	  240, 60, true);
   rgbRasterRun();
   rgbRasterWaitComplete();
+
+  // draw a font letter to (8, 128)
+  uint8_t letterA[8] = {0x18, 0x24, 0x42, 0x42, 0x7E, 0x42, 0x42, 0x42};
+  Graphic* letterAG = &((Graphic){letterA, 8, 8, B1BPP});
+  rgbBlit1bpp(letterAG, &((Rect){0, 0, 8, 8}), screen, 8, 128, true, RED, MAGENTA);
+  rgbRasterRun();
+  rgbRasterWaitComplete();
   
   // done
   printf("Finished drawing!\n\n");
