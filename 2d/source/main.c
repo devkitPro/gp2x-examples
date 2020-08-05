@@ -69,18 +69,27 @@ int main(int argc, char* argv[]) {
   rgbRasterRun();
   rgbRasterWaitComplete();
 
-  // draw sun at (0,60) excluding set bits in pattern resulting in a shaded effect
+  // draw sun at (0,60) excluding set bits in pattern with unset bits being black resulting in a shaded effect
   pattern[0] = 0xAA55AA55;
   pattern[1] = 0xAA55AA55;
   rgbSetTransparencyColour(MAGENTA);
   rgbRasterOp(sun, &((Rect){0, 0, 60, 60}),
 	      screen, &((Rect){0, 60, 60, 60}),
-	      ROP_EXCLUDEPAT,
+	      ROP_DPSao,
 	      &((RasterPattern){0xFFFF, BLACK, B1BPP, 0}),
 	      true, 0, 0);
   rgbRasterRun();
   rgbRasterWaitComplete();
 
+  // draw sun at (0,120) excluding set bits in pattern with unset bits being black resulting in a lightning effect
+  rgbRasterOp(sun, &((Rect){0, 0, 60, 60}),
+	      screen, &((Rect){0, 120, 60, 60}),
+	      ROP_SPno,
+	      &((RasterPattern){0xFFFF, BLACK, B1BPP, 0}),
+	      false, 0, 0);
+  rgbRasterRun();
+  rgbRasterWaitComplete();
+  
   // draw the sun at (60,60) rotated 90 degrees
   rgbRotBlit(sun, &((Rect){0, 0, 60, 60}),
 	     screen, 60, 60, DEG90);
@@ -114,10 +123,10 @@ int main(int argc, char* argv[]) {
   rgbRasterRun();
   rgbRasterWaitComplete();
 
-  // draw a font letter to (8, 128)
+  // draw a font letter to (8, 188)
   uint8_t letterA[8] = {0x18, 0x24, 0x42, 0x42, 0x7E, 0x42, 0x42, 0x42};
   Graphic* letterAG = &((Graphic){letterA, 8, 8, B1BPP});
-  rgbBlit1bpp(letterAG, &((Rect){0, 0, 8, 8}), screen, 8, 128, true, RED, MAGENTA);
+  rgbBlit1bpp(letterAG, &((Rect){0, 0, 8, 8}), screen, 8, 188, true, RED, MAGENTA);
   rgbRasterRun();
   rgbRasterWaitComplete();
   
