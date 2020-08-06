@@ -1,0 +1,1 @@
+Example of setting up and writing to the framebuffer in 8bpp mode, press any key to toggle between colours, R to quit (reloads bootloader).
