@@ -7,6 +7,7 @@
 extern volatile void* __is_arm940;
 int main() {
   gp2xInit();
+  puCachesInitOn();
   uint16_t* fb = (uint16_t*) malloc(320*240*2);
   
   arm920Data[0] = (((uint32_t)fb) >> 16);
