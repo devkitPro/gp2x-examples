@@ -43,14 +43,14 @@ export OUTPUT	:=	$(CURDIR)/$(TARGET)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) *.elf *.bin *.o2x
-	@make -C $(CURDIR)/$(ARM920_DIR) clean ARM940_MEMORY_BANK=$(ARM940_MEMORY_BANK)
-	@make -C $(CURDIR)/$(ARM940_DIR) clean ARM940_MEMORY_BANK=$(ARM940_MEMORY_BANK)
+	@$(MAKE) -C $(CURDIR)/$(ARM920_DIR) clean ARM940_MEMORY_BANK=$(ARM940_MEMORY_BANK)
+	@$(MAKE) -C $(CURDIR)/$(ARM940_DIR) clean ARM940_MEMORY_BANK=$(ARM940_MEMORY_BANK)
 
 #---------------------------------------------------------------------------------
 else
